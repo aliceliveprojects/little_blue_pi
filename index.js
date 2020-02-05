@@ -9,7 +9,7 @@ bleno.on('stateChange', function(state) {
 
   if (state === 'poweredOn') {
 
-    bleno.startAdvertising(bleno.name, [systemInformationService.uuid]);
+    bleno.startAdvertising("BLE: Alice DigitalLabs", [systemInformationService.uuid]);
   }
   else {
 
