@@ -8,7 +8,7 @@ var MemoryCharacteristic = require('./characteristics/memory');
 function SystemInformationService() {
 
   bleno.PrimaryService.call(this, {
-    uuid: 'ff51b30e-d7e2-4d93-8842-a7c4a57dfb07',
+    uuid: '25576d0e-7452-4910-900b-1a9f82c19a7d',
     characteristics: [
       new LoadAverageCharacteristic(),
       new UptimeCharacteristic(),

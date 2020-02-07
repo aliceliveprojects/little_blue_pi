@@ -7,7 +7,7 @@ var BlenoCharacteristic = bleno.Characteristic;
 var UptimeCharacteristic = function() {
 
  UptimeCharacteristic.super_.call(this, {
-    uuid: 'ff51b30e-d7e2-4d93-8842-a7c4a57dfb09',
+    uuid: '4541e38d-7a4c-48a5-b7c8-61a0c1efddd9',
     properties: ['read'],
   });
 
