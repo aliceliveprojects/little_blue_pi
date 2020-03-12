@@ -10,6 +10,7 @@ var LoadAverageCharacteristic = function() {
     properties: ['read'],
   });
 
+// NOTE: for reads, value cannot be greater than 512 bytes long, and is sent in chunks the size of the MTU (max transmission unit).
  this._value = new Buffer(0);
 };
 
@@ -29,11 +30,8 @@ LoadAverageCharacteristic.prototype.onReadRequest = function(offset, callback) {
     }));
   }
 
-  console.log('LoadAverageCharacteristic - onReadRequest: value = ' +
-    this._value.slice(offset, offset + bleno.mtu).toString()
-  );
-
-  callback(this.RESULT_SUCCESS, this._value.slice(offset, this._value.length));
+  var data =  this._value.slice(offset, this._value.length);
+  callback(this.RESULT_SUCCESS, data);
 };
 
 util.inherits(LoadAverageCharacteristic, BlenoCharacteristic);

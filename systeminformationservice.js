@@ -1,9 +1,11 @@
 var bleno = require('bleno');
 var util = require('util');
 
-var LoadAverageCharacteristic = require('./characteristics/loadaverage');
-var UptimeCharacteristic = require('./characteristics/uptime');
-var MemoryCharacteristic = require('./characteristics/memory');
+var LoadAverageCharacteristic = require('./systemCharacteristics/loadaverage');
+var UptimeCharacteristic = require('./systemCharacteristics/uptime');
+var MemoryCharacteristic = require('./systemCharacteristics/memory');
+
+
 
 function SystemInformationService() {
 

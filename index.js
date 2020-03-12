@@ -1,8 +1,21 @@
 var bleno = require('bleno');
 
 var SystemInformationService = require('./systeminformationservice');
+var FilesystemService = require('./filesystemaccessservice');
+
 
 var systemInformationService = new SystemInformationService();
+var filesystemService = new FilesystemService();
+
+
+bleno.on('accept', function(address){
+  console.log("accepted: " + address);
+});
+
+bleno.on('disconnect', function(address){
+  console.log("disconnected: " + address);
+});
+
 
 bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
@@ -26,7 +39,8 @@ bleno.on('advertisingStart', function(error) {
   if (!error) {
 
     bleno.setServices([
-      systemInformationService
+      systemInformationService,
+      filesystemService
     ]);
   }
 });

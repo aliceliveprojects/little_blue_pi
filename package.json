@@ -9,6 +9,8 @@
   "author": "Andreas Lundquist",
   "license": "Apache-2.0",
   "dependencies": {
-    "bleno": "npm:@abandonware/bleno@^0.5.1-0"
+    "bleno": "npm:@abandonware/bleno@^0.5.1-0",
+    "sprintf-js": "^1.1.2",
+    "stream-array": "^1.1.2"
   }
 }
