@@ -4,14 +4,14 @@ var utilService = require('../core/services/utilservice')();
 var encode = require('../core/encode');
 var filesystemService = require('../core/services/filesystemservice')();
 var streamService = require('../core/services/streamservice')();
-var streamChunckerService = require('../core/services/streamchunkerservice')();
+
 
 const states = {
     no_current_operation: -1,
     transferring: 0
 }
 
-const delay_ms = 50; // delay between sending chunks of a buffer.
+const delay_ms = 5; // delay between sending chunks of a buffer.
 var _transferPercent = 0;
 var _chunkable = null;
 
@@ -60,11 +60,8 @@ SetDirCharacteristic.prototype.onWriteRequest = function (data, offset, withoutR
 SetDirCharacteristic.prototype.onReadRequest = function (offset, callback) {
 
     if (!offset) {
-        var result = utilService.createOutput_Int(states.no_current_operation);
-        if (state == states.transferring) {
-            result = utilService.createReadOutput_Percent(_transferPercent);
-        }
-
+        var path = filesystemService.getDir();
+        var result = utilService.createReadOutput_String(path);
         this._value = result;
     }
   var data =  this._value.slice(offset, this._value.length);
@@ -74,7 +71,7 @@ SetDirCharacteristic.prototype.onReadRequest = function (offset, callback) {
 
 
 SetDirCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, updateValueCallback) {
-    console.log('SetDirCharacteristic');
+    console.log('subscribing');
 
 
     if (state == states.no_current_operation) {
@@ -84,7 +81,7 @@ SetDirCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, updat
             .then(
                 function (listing) {
                     var dir = filesystemService.getDir();
-                    var buffer = utils.createDirListingOutput(dir, listing);
+                    var buffer = utilService.createDirListingOutput(dir, listing);
 
                     if (buffer.byteLength > 0) {
                         // prepare to split the buffer into n chunks 
@@ -92,25 +89,24 @@ SetDirCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, updat
                         // first notifcation tells the client there will be n further notifications.
 
                         var numChunks = Math.ceil(buffer.byteLength / maxValueSize_bytes);
-                        var readable = streamService.createBuffStream(buffer);
-                        _chunkable = streamChunckerService.createChunkedReadable(readable, maxValueSize_bytes, delay_ms);
-
+                        var _chunkable = streamService.createBuffStream(buffer, delay_ms, maxValueSize_bytes);
+                       
                         // wait to start sending actual data
                         setTimeout(function () {
                             _chunkable.on("end", function (chunk) {
-                                updateValueCallback(chunk);
                                 state = states.no_current_operation;
                             });
                             // chunkable stream will start sending data as soon as on('data'... is called
                             _chunkable.on("data", function (chunk) {
+                           
                                 _transferPercent = 100 * numChunks / _chunkable.chunkCount
                                 updateValueCallback(chunk);
                             });
-
+                        
                         }, delay_ms);
-
+                
                         // send the number of chunks to follow immediately, as the first notification.
-                        updateValueCallback(utilService.createOutput_JSON(numChunks));
+                        updateValueCallback(utilService.createOutput_Int(numChunks));
 
                     }
                 }
@@ -129,10 +125,10 @@ SetDirCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, updat
 
 
 SetDirCharacteristic.prototype.onUnsubscribe = function () {
-
+    console.log('un-subscribing');
     if (state == states.transferring) {
         if (_chunkable) {
-            _chunkable.cancel();
+            _chunkable.stop();
             _chunkable = null;
         }
         state = states.no_current_operation;

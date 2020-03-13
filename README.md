@@ -24,14 +24,10 @@ all parameters are sent to the characteristic as:
 It's so that we can run a simple JSON parse as a first pass validation.
 
 
-write: makes the request
-read: gets the status of the request
-notify: subscribes to the request
+write: makes a 'call' with an argument
+read: returns the argument to the call
+notify: makes the call, and subscribes in order to get the large ammount of data to be returned.
 
-client will read and back-off:
-read response: 
-<0:characterisitic specific error condition 
->=0: characteristic specific success condition
 
 ### set-dir: 
 
@@ -40,12 +36,14 @@ long write: utf-8 buffer: string: path
 if no value, will return the current directory. Default is '/'.
 
 **read**
-response: 0 - 100: buffer transfer progress
-response: -1: ready: no current operation
-response: -404 not found
-response: -403 forbidden
+returns the path written
 
 **notify**
+reads the directory.
+
+1 chunk, integer as UTF-8 string
+representing the number of chunks to follow.
+
 string chunks of buffer
 
 buffer contains:
@@ -75,15 +73,14 @@ d = directory flag: 0 = false
 
 ### get-file
 **write**
-long write: utf-8 buffer: string: name of file (from set-dir)
+long write: utf-8 buffer: string: name of file in the directory of 'set-dir'
 
 **read**
-response: 0 - 100: buffer transfer progress
-response: -1: ready: no current operation
-response: -404 not found
-response: -403 forbidden
+reads the filename given in write
 
 **notify**
+reads the file.
+
 string chunks of buffer
 
 buffer contains:

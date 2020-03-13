@@ -1,41 +1,30 @@
 var path = require('path');
 var fs = require('fs');
-var streamify = require('stream-array');
+var streamBuffers = require('stream-buffers');
 
 function StreamService() {
-    
-    function createBuffStream(buffer){
-        return new Promise(function(resolve, reject){
-            var stream = null;
-            try{
-                stream = streamify(buffer);
-                resolve(stream);
-            }catch(e){
-                reject(e);
-            }
-        });  
+
+    function createBuffStream(buffer, delay_ms, chunkSize_bytes) {
+
+        var stream = null;
+        stream = new streamBuffers.ReadableStreamBuffer(
+            {
+                frequency: delay_ms,      // in milliseconds.
+                chunkSize: chunkSize_bytes     // in bytes.
+            });
+        stream.put(buffer);
+        
+        return stream;
+
     }
 
-    function createFileStream(path){
-        return new Promise(function(resolve, reject){
-            var readStream = null;
-            
-            try{
-                readStream = fs.createReadStream(path);
-                readStream.on('open', function () {
-                    resolve(readStream);
-                  });
-                readStream.on('error', function(error){
-                    reject(error);
-                });
-
-            }catch(e){
-                reject(e);
-            }
-        });
+    function createFileStream(path) {
+        var readStream = null;
+        readStream = fs.createReadStream(path);
+        return readStream;
     }
 
-  
+
 
 
 

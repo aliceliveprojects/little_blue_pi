@@ -29,8 +29,14 @@ function UtilService() {
         return output;
     }
 
-    function createReadOutput_Int(value){
+    function createOutput_Int(value){
+        var output = new Buffer(sprintf("%d",value));
+        return output;
+    }
+
+    function createReadOutput_String(value){
         var result = createCommonReadOutput();
+
         result.value = value;
 
         var output = new Buffer(JSON.stringify(result));
@@ -69,8 +75,10 @@ function UtilService() {
 
 
     return {
+        createDirListingOutput: createDirListingOutput,
         createReadOutput_Percent: createReadOutput_Percent,
-        createOutput_Int: createReadOutput_Int
+        createReadOutput_String: createReadOutput_String,
+        createOutput_Int: createOutput_Int
     }
 
 };

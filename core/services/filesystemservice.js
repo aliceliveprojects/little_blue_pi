@@ -7,16 +7,19 @@ function FileSystemService() {
     var m_currentDir = DEFAULT_DIR;
 
     async function _dir(path) {
-
         var result = [];
-        const dir = await fs.promises.opendir(path);
-        for await (const dirent of dir) {
-            result.push({
-                m: dirent.name,
-                d: dirent.isDirectory() ? 1 : 0
-            })
+        try {
+            const dir = await fs.promises.opendir(path);
+            for await (const dirent of dir) {
+                result.push({
+                    m: dirent.name,
+                    d: dirent.isDirectory() ? 1 : 0
+                })
+            }
+        } catch (e) {
+            // I wanted to send an error here, but I can't seem to send one up to the client.
+            console.log("path not found, but returning empty.")
         }
-        await dir.close();
         return result;
     }
 

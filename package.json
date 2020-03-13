@@ -11,6 +11,6 @@
   "dependencies": {
     "bleno": "npm:@abandonware/bleno@^0.5.1-0",
     "sprintf-js": "^1.1.2",
-    "stream-array": "^1.1.2"
+    "stream-buffers": "^3.0.2"
   }
 }
