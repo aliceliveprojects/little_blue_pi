@@ -71,7 +71,7 @@ SetFileCharacteristic.prototype.onReadRequest = function (offset, callback) {
 
 
 SetFileCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, updateValueCallback) {
-    console.log('subscribing');
+    console.log('subscribing. MTU: ' + maxValueSize_bytes);
 
     if (state == states.no_current_operation) {
         state = states.transferring;
@@ -101,12 +101,14 @@ SetFileCharacteristic.prototype.onSubscribe = function (maxValueSize_bytes, upda
                     _chunkable.on("data", function (chunk) {
 
                         _transferPercent = 100 * numChunks / _chunkable.chunkCount
+                        console.log("+");
                         updateValueCallback(chunk);
                     });
 
                 }, delay_ms);
 
                 // send the number of chunks to follow immediately, as the first notification.
+                console.log("sending:" + numChunks);
                 updateValueCallback(utilService.createOutput_Int(numChunks));
             }
         }
