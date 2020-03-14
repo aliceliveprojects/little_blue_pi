@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "bleno": "npm:@abandonware/bleno@^0.5.1-0",
+    "chunking-streams": "0.0.8",
     "sprintf-js": "^1.1.2",
     "stream-buffers": "^3.0.2"
   }

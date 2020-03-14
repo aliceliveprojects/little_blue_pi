@@ -1,6 +1,8 @@
-var path = require('path');
+
 var fs = require('fs');
 var streamBuffers = require('stream-buffers');
+var ReadableFileStream = require('./helpers/readable_filestream')
+
 
 function StreamService() {
 
@@ -18,19 +20,24 @@ function StreamService() {
 
     }
 
-    function createFileStream(path) {
-        var readStream = null;
-        readStream = fs.createReadStream(path);
-        return readStream;
+    function createFileStream(path, delay_ms, chunkSize_bytes) {
+      
+        var readStream = fs.createReadStream(path);
+        var stream = new ReadableFileStream (
+            {
+                frequency: delay_ms,      // in milliseconds.
+                chunkSize: chunkSize_bytes     // in bytes.
+            });
+        stream.put(readStream);
+
+        return stream;
+
     }
-
-
-
 
 
     return {
         createBuffStream: createBuffStream,
-        createFileStrem: createFileStream
+        createFileStream: createFileStream
     }
 
 };
